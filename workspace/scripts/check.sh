@@ -56,8 +56,7 @@ origin_uses_ssh() {
 
     repository_exists || return 1
     origin="$(git -C "${REPOSITORY}" remote get-url origin 2>/dev/null)"
-    [[ "${origin}" == git@github.com:* || \
-       "${origin}" == git@gitlab.inf.utfsm.cl:* ]]
+    [[ "${origin}" == git@github.com:* ]]
 }
 
 file_is_tracked() {
@@ -159,7 +158,7 @@ printf '\n== Actividades ==========================\n\n'
 
 check "[1.1] La identidad de Git está configurada" identity_is_configured
 check "[2.2] Existe el repositorio clonado" repository_exists
-check "[2.2] El remote origin utiliza una URL SSH conocida" origin_uses_ssh
+check "[2.2] El remote origin utiliza una URL SSH de GitHub" origin_uses_ssh
 check "[3.3] README.md está registrado en Git" file_is_tracked README.md
 check "[3.3] areaperimetro.c está registrado en Git" file_is_tracked areaperimetro.c
 check "[4.1] areaperimetro existe como binario ejecutable" is_binary_executable "${PROGRAM}"
