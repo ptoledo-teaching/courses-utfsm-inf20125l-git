@@ -4,14 +4,14 @@
 
 Este laboratorio introduce el uso de Git para registrar la evolución del código de un proyecto y compartir sus cambios mediante un `remote repository` (repositorio remoto). El trabajo se concentra en comprender el flujo básico y la terminología propia de Git.
 
-La actividad comienza con la creación de un repositorio en un servicio remoto y la descarga de una copia en la máquina virtual. Sobre esa copia se realizará un primer ejercicio completamente guiado para modificar archivos, guardar una nueva versión y publicarla. Luego se repetirá el procedimiento con menos comandos explícitos, de modo que sea necesario reconocer qué operación corresponde realizar en cada momento.
+La actividad comienza con la creación de un repositorio en un servicio remoto, como GitHub o GitLab, y la descarga de una copia en la máquina virtual. Sobre esa copia se realizará un primer ejercicio completamente guiado para modificar archivos, guardar una nueva versión y publicarla. Luego se repetirá el procedimiento con menos comandos explícitos, de modo que sea necesario reconocer qué operación corresponde realizar en cada momento.
 
 ### Prerrequisitos
 
 - Tener iniciada la máquina virtual Lubuntu y haber clonado este repositorio
 - Manejar el uso de la terminal y la edición de archivos mediante Vim
 - Saber compilar y ejecutar un programa sencillo escrito en C
-- Tener una cuenta en `github.com`
+- Tener una cuenta en `github.com` o en `gitlab.inf.utfsm.cl`
 - Tener disponibles `git`, `ssh`, `ssh-keygen`, `gcc` y `bash`
 - Considerar que el repositorio creado durante la actividad será público y no debe contener información sensible
 
@@ -63,8 +63,6 @@ Git no guarda automáticamente cada modificación. Antes de crear una nueva vers
 El flujo básico consiste en modificar archivos en el `working directory`, seleccionarlos con `git add` para incorporarlos al `staging`, guardarlos en un commit mediante `git commit` y publicar ese commit en el `remote` con `git push`. En sentido contrario, `git pull` permite incorporar al `local` los commits disponibles en el `remote`.
 
 ## Actividad
-
-En esta actividad se utilizará GitHub. Una conexión SSH normalmente utiliza el puerto 22, pero la red de trabajo no permite conexiones salientes por ese puerto. GitHub también ofrece acceso SSH mediante el puerto 443, por lo que se configurará esa alternativa antes de clonar el repositorio.
 
 ### 1. Preparar Git y el acceso al `remote`
 
@@ -152,43 +150,30 @@ Mostrar solamente la llave pública:
 cat ~/.ssh/id_ed25519.pub
 ```
 
-#### 1.3. Registrar la llave y configurar el acceso
+#### 1.3. Registrar y probar la llave
 
-Registrar la llave pública en GitHub. Para esto hay que dirigirse al sitio web del servicio y agregar la llave desde `Settings` -> `SSH and GPG keys`.
+Registrar la llave pública en el servicio remoto. Para esto hay que dirigirse al sitio web del proveedor del remoto y agregar la llave mediante su procedimiento específico. Para los servicios considerados en esta actividad, las opciones correspondientes se encuentran en:
 
-El servidor SSH habitual de GitHub utiliza el puerto 22. Para utilizar el servidor alternativo disponible en el puerto 443 sin cambiar las URL de los repositorios, crear o editar el archivo de configuración de SSH:
+- En GitHub: `Settings` -> `SSH and GPG keys`
+- En GitLab: `Preferences` -> `SSH Keys`
 
-```bash
-vim ~/.ssh/config
-```
-
-Agregar las siguientes líneas y guardar el archivo:
-
-```text
-Host github.com
-    HostName ssh.github.com
-    User git
-    Port 443
-```
-
-- `Host github.com` identifica las conexiones que utilizan el nombre habitual de GitHub
-- `HostName ssh.github.com` establece el servidor alternativo que recibirá la conexión
-- `User git` establece el usuario utilizado por el servicio SSH
-- `Port 443` establece el puerto por el que se realizará la conexión
-
-Una vez que la llave pública está registrada y el archivo se encuentra configurado, probar la conexión:
+Una vez que la llave pública está registrada en el servicio remoto, probar la conexión mediante el comando correspondiente:
 
 ```bash
 ssh -T git@github.com
 ```
 
-Aunque el comando utiliza el nombre `github.com`, SSH leerá el archivo de configuración y se conectará a `ssh.github.com` mediante el puerto 443. El texto `git@github.com` identifica al servicio SSH y no se debe reemplazar por un correo personal. La primera conexión puede solicitar que se confirme la identidad del servidor mediante su huella, que corresponde a un identificador de ese servidor. En ese caso, revisar que aparezca `ssh.github.com` y responder `yes`.
+```bash
+ssh -T git@gitlab.inf.utfsm.cl
+```
+
+El texto `git@github.com` o `git@gitlab.inf.utfsm.cl` identifica al servicio SSH y no se debe reemplazar por un correo personal. La primera conexión puede solicitar que se confirme la identidad del servidor mediante su huella, que corresponde a un identificador de ese servidor. En ese caso, revisar que aparezca el nombre del servicio elegido y responder `yes`.
 
 ### 2. Crear y clonar el `remote repository`
 
 #### 2.1. Crear el repositorio en el servicio remoto
 
-Los servicios remotos permiten alojar `remote repositories`, es decir, guardar en un servidor externo una copia de un repositorio. Desde la interfaz web de GitHub, crear un repositorio con las siguientes características:
+Los servicios remotos permiten alojar `remote repositories`, es decir, guardar en un servidor externo una copia de un repositorio. Desde la interfaz web del servicio elegido, crear un repositorio con las siguientes características:
 
 - Nombre `inf20125-git-<ROL>` reemplazando `<ROL>` por el identificador del estudiante
 - Visibilidad pública
@@ -197,10 +182,11 @@ Los servicios remotos permiten alojar `remote repositories`, es decir, guardar e
 
 El `README.md` creado al inicializar el `remote` queda registrado en un primer commit. De esta manera, el repositorio ya contiene una versión que se puede descargar.
 
-Copiar la URL SSH presentada por GitHub. Esta dirección identifica el repositorio y permite conectarse con él mediante la llave registrada anteriormente. La URL tiene una forma similar a la siguiente:
+Copiar la URL SSH presentada por el servicio remoto. Esta dirección identifica el repositorio y permite conectarse con él mediante la llave registrada anteriormente. En GitHub y GitLab, la URL tiene una forma similar a una de las siguientes:
 
 ```text
 git@github.com:<USUARIO>/inf20125-git-<ROL>.git
+git@gitlab.inf.utfsm.cl:<USUARIO>/inf20125-git-<ROL>.git
 ```
 
 Una URL que comienza con `https://` utiliza un tipo de conexión diferente del seleccionado para esta actividad y no corresponde a las operaciones siguientes.
@@ -436,3 +422,49 @@ rm ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub
 ```
 
 Eliminar los archivos locales no elimina la llave pública registrada en el servicio remoto. Por eso se deben completar ambos pasos.
+
+## Apéndice: acceso a GitHub mediante el puerto 443
+
+Al conectarse a servicios mediante internet se utilizan diferentes protocolos de comunicacion como HTTP, HTTPS, IMAP, SMTP, entre muchos otros. En este caso se utiliza SSH.
+
+Al conectarse a servicios, un servidor tiene "puertos" que se encargan de diferenciar los diferentes protocolos. Los puertos corresponden a un número entero y suelen estar asociados al protocolo que tipicamente lo usan. HTTP usa el 80, HTTPS el 443, SSH el 22, etc.
+
+Dependiendo de las reglas de la configuración de la red, hay veces que por seguridad, o políticas internas de una institución, algunos de estos puertos pueden estar bloqueados para uso, y de eso se bloquea la comunicación con los servicios que los usan.
+
+Las instrucciones de este laboratorio consideran que SSH puede utilizar sin problemas el puerto 22. Si una red bloquea ese puerto, GitHub también permite establecer la conexión mediante el puerto 443. Este procedimiento se debe aplicar en el punto 1.3 antes de continuar con la actividad.
+
+Comprobar primero que el servidor alternativo se encuentra disponible:
+
+```bash
+ssh -T -p 443 git@ssh.github.com
+```
+
+La opción `-p 443` indica el puerto que se utilizará. Si el comando permite autenticar la llave registrada en GitHub, crear o editar el archivo de configuración de SSH:
+
+```bash
+vim ~/.ssh/config
+```
+
+Agregar las siguientes líneas y guardar el archivo:
+
+```text
+Host github.com
+    HostName ssh.github.com
+    User git
+    Port 443
+```
+
+- `Host github.com` identifica las conexiones que utilizan el nombre habitual de GitHub
+- `HostName ssh.github.com` establece el servidor alternativo que recibirá la conexión
+- `User git` establece el usuario utilizado por el servicio SSH
+- `Port 443` establece el puerto por el que se realizará la conexión
+
+Probar nuevamente la conexión utilizando el nombre habitual:
+
+```bash
+ssh -T git@github.com
+```
+
+SSH leerá el archivo de configuración y redirigirá la conexión a `ssh.github.com` mediante el puerto 443. Las URL copiadas desde GitHub conservan su forma habitual, por lo que no es necesario modificarlas antes de utilizar `git clone`, `git pull` o `git push`.
+
+Al terminar la actividad, eliminar este bloque de `~/.ssh/config` si fue agregado solamente para trabajar desde una red que bloqueaba el puerto 22.
