@@ -175,7 +175,7 @@ El texto `git@github.com` o `git@gitlab.inf.utfsm.cl` identifica al servicio SSH
 
 Los servicios remotos permiten alojar `remote repositories`, es decir, guardar en un servidor externo una copia de un repositorio. Desde la interfaz web del servicio elegido, crear un repositorio con las siguientes características:
 
-- Nombre `inf20125-git-<ROL>` reemplazando `<ROL>` por el identificador del estudiante
+- Nombre `inf20125-git`
 - Visibilidad pública
 - Inicializado con un archivo `README.md`
 - Sin plantilla de `.gitignore` y sin licencia
@@ -185,8 +185,8 @@ El `README.md` creado al inicializar el `remote` queda registrado en un primer c
 Copiar la URL SSH presentada por el servicio remoto. Esta dirección identifica el repositorio y permite conectarse con él mediante la llave registrada anteriormente. En GitHub y GitLab, la URL tiene una forma similar a una de las siguientes:
 
 ```text
-git@github.com:<USUARIO>/inf20125-git-<ROL>.git
-git@gitlab.inf.utfsm.cl:<USUARIO>/inf20125-git-<ROL>.git
+git@github.com:<USUARIO>/inf20125-git.git
+git@gitlab.inf.utfsm.cl:<USUARIO>/inf20125-git.git
 ```
 
 Una URL que comienza con `https://` utiliza un tipo de conexión diferente del seleccionado para esta actividad y no corresponde a las operaciones siguientes.
